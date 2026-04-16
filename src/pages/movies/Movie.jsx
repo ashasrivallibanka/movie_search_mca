@@ -6,7 +6,6 @@ import Card from "../../components/card/Card";
 const apiKey = process.env.REACT_APP_API_KEY;
 
 function Movies() {
-    const [movieList, setMoviesList] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState(null);
     const location = useLocation();
@@ -53,7 +52,7 @@ function Movies() {
     console.log(filteredMovies)
     useEffect(() => {
         fetchMovies();
-    }, [movieName]);
+    }, [movieName, fetchMovies]);
 
     return (
         <>
