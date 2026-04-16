@@ -15,11 +15,10 @@ function Movies() {
         try {
             let url;
 
-            if(movieName){
-                url=`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movieName}`;
-            }
-            else{
-                url=`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
+            if (movieName) {
+                url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movieName}`;
+            } else {
+                url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
             }
 
             const response = await fetch(url);
@@ -48,7 +47,6 @@ function Movies() {
         }
     };
 
-    console.log(filteredMovies)
     useEffect(() => {
         fetchMovies();
     }, [movieName]);
@@ -81,3 +79,4 @@ function Movies() {
 }
 
 export default Movies;
+
