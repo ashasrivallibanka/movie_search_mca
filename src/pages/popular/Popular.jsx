@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './Popular.css';
+// ✅ Removed Popular.css import since file is missing
 import Card from "../../components/card/Card";
 
 function Popular() {
