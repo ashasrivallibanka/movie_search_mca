@@ -28,7 +28,6 @@ function Movies() {
             }
             const json = await response.json();
             const movies = json.results || [];
-            setMoviesList(movies);
             filterMovies(movies);
         } catch (err) {
             setError("Failed to fetch movies: " + err.message);
@@ -52,7 +51,7 @@ function Movies() {
     console.log(filteredMovies)
     useEffect(() => {
         fetchMovies();
-    }, [movieName, fetchMovies]);
+    }, [movieName]);
 
     return (
         <>
