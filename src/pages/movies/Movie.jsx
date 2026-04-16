@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+iimport React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import './MovieT.css';
 import Card from "../../components/card/Card";
@@ -8,10 +8,25 @@ const apiKey = process.env.REACT_APP_API_KEY;
 function Movies() {
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState(null);
+
     const location = useLocation();
     const movieName = location.state?.movieName || "";
 
-    // ✅ Wrap fetchMovies in useCallback so it has a stable identity
+    // ✅ Memoize filterMovies so it's stable
+    const filterMovies = useCallback((movies) => {
+        if (movieName) {
+            const filtered = movies.filter(movie =>
+                movie.original_title.toLowerCase().includes(movieName.toLowerCase())
+            );
+            setFilteredMovies(filtered);
+            setError(filtered.length === 0 ? "No movies found matching your search." : null);
+        } else {
+            setFilteredMovies(movies);
+            setError(null);
+        }
+    }, [movieName]);
+
+    // ✅ Include filterMovies in dependencies
     const fetchMovies = useCallback(async () => {
         try {
             let url;
@@ -26,29 +41,19 @@ function Movies() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+
             const json = await response.json();
             const movies = json.results || [];
+
             filterMovies(movies);
+
         } catch (err) {
             setError("Failed to fetch movies: " + err.message);
             setFilteredMovies([]);
         }
-    }, [movieName, apiKey]); // ✅ include dependencies used inside fetchMovies
+    }, [movieName, apiKey, filterMovies]);
 
-    const filterMovies = (movies) => {
-        if (movieName) {
-            const filtered = movies.filter(movie =>
-                movie.original_title.toLowerCase().includes(movieName.toLowerCase())
-            );
-            setFilteredMovies(filtered);
-            setError(filtered.length === 0 ? "No movies found matching your search." : null);
-        } else {
-            setFilteredMovies(movies);
-            setError(null);
-        }
-    };
-
-    // ✅ Now ESLint is satisfied because fetchMovies is stable and included
+    // ✅ No ESLint error now
     useEffect(() => {
         fetchMovies();
     }, [fetchMovies]);
