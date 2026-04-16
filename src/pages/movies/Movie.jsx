@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import './MovieT.css';
 import Card from "../../components/card/Card";
@@ -11,7 +11,8 @@ function Movies() {
     const location = useLocation();
     const movieName = location.state?.movieName || "";
 
-    const fetchMovies = async () => {
+    // ✅ Wrap fetchMovies in useCallback so it has a stable identity
+    const fetchMovies = useCallback(async () => {
         try {
             let url;
 
@@ -32,7 +33,7 @@ function Movies() {
             setError("Failed to fetch movies: " + err.message);
             setFilteredMovies([]);
         }
-    };
+    }, [movieName, apiKey]); // ✅ include dependencies used inside fetchMovies
 
     const filterMovies = (movies) => {
         if (movieName) {
@@ -47,9 +48,10 @@ function Movies() {
         }
     };
 
+    // ✅ Now ESLint is satisfied because fetchMovies is stable and included
     useEffect(() => {
         fetchMovies();
-    }, [movieName]);
+    }, [fetchMovies]);
 
     return (
         <>
@@ -79,4 +81,3 @@ function Movies() {
 }
 
 export default Movies;
-
